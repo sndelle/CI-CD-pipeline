@@ -1,0 +1,60 @@
+Install Jenkins
+2)	A- Make sure Jenkins default port 8080 is open for our jenkin server , open Jenkins on browser – ipaddress:8080
+B- Jenkins will prompt for a password found in Jenkins home directory
+cat /var/lib/Jenkins/secrets/initialAdminPassword
+#Create admin user, add team members
+3)	Jenkins Job
+# Click on new item, create a free style project
+# Give description under general tool bar
+4)	(Git Clone) -  Go to Source Code Management too bar
+# Select Git, get a project url from github (got to github repository, click on code and copy)
+# Enter credentials i.e git username and password
+#Provide an ID and description
+# Do clone from whatever branch applicable and save
+# Click on build now
+# Progress can be viewed from workspace or console output
+5)	Integrate Jenkins with Maven
+#Click on manage jenkins, select Global Tool configuration 
+# Click on add maven (indicate the version of maven) and save
+# Go to dashboard, click on project, click on configure
+# go to build
+# Add build steps, select “invoke top_level Maven targets
+# Maven version  - click on the version
+# For goal – clean package and save
+# Build now
+#Go to project, click on configure, click build triggers, click poll SCM and schedule automatic build triggers
+# 5* means every minute and save
+6)	Sonaqube Integration
+#Use url of sonaqube server  eg http://3.236.125.137:9000/quality_gates/show/1
+#Go to the project on github, to file (pom.xml), to get address
+#Go to properties stack in pom.xml, get to sonar.host.url, look for  ip and change the ip to the current ip of the sonarqube server
+# Commit changes on github
+# Go to Jenkins, click on configure, build, Add build steps, “invoke top_level mave target” and add goal
+#Goal: sonar:sonar
+#save
+7)	Nexus Integration
+# Concentrating on 2 files: settings.xml and pom.xml
+# go to Jenkins server, go into the home directory
+cd /var/lib/Jenkins
+# search for tools
+cd tool/
+cd Hudson.tasks.Maven_MavenInstallation
+ls
+cd maven 3.6.6/
+ls
+ls conf/
+vi conf/settings.xml
+# In this file, add the following in between <servers>:
+<id>nexus</id>
+<username>admin</username>
+<password>admin123</password>
+</server>
+#Please note that the username and password depends on what you use to access nexus
+# save and exit (:wq! Enter)
+# To configure pom.xml, we go to the browser. This is to enable the project build to upload artifact
+# Go to nexus, sign in with credentials 
+# go to repository details
+# got to github, go to the nexus file, look for tag<distribution management>
+# change <url> http: for both releases and snapshot to what we have on the nexus server
+# Commit changes
+# Go to Jenkins and add build steps, “invoke top_level mave target”, goal – Clean deploy and save.
